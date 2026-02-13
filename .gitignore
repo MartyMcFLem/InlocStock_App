@@ -4,8 +4,10 @@ vendor/
 
 # Fichiers de configuration sensibles
 api-config.php
+api/index.php
 config.php
 .env
+*.local.php
 
 # Fichiers de log
 *.log

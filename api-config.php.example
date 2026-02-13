@@ -1,0 +1,131 @@
+<?php
+/**
+ * Configuration de l'API Inloc - EXEMPLE
+ * 
+ * Copiez ce fichier en 'api-config.php' et remplissez avec vos vraies valeurs.
+ * Le fichier api-config.php ne sera jamais envoyé sur Git (.gitignore)
+ */
+
+// Configuration de l'API Inloc
+define('INLOC_API_URL', 'https://www.inloc.be/admin/api');
+define('INLOC_API_KEY', ''); // ⚠️ À remplir avec votre clé API (ne pas committer!)
+
+// Configuration de la base de données locale (optionnel)
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'inlocstock');
+define('DB_USER', 'root');
+define('DB_PASS', ''); // ⚠️ À remplir avec votre mot de passe
+
+// Configuration de l'application
+define('APP_NAME', 'InlocStock');
+define('APP_VERSION', '1.0.0');
+define('APP_ENV', 'production'); // development ou production
+
+// Configuration de sécurité
+define('ALLOWED_ORIGINS', [
+    'http://localhost',
+    'https://localhost',
+    'https://yourdomain.com'
+]);
+
+// Timezone
+date_default_timezone_set('Europe/Brussels');
+
+// Gestion des erreurs
+if (APP_ENV === 'development') {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+} else {
+    error_reporting(0);
+    ini_set('display_errors', 0);
+}
+
+// Headers CORS
+function setCorsHeaders() {
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    
+    if (in_array($origin, ALLOWED_ORIGINS)) {
+        header("Access-Control-Allow-Origin: $origin");
+    }
+    
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-API-Key');
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Max-Age: 86400');
+    
+    // Gérer les requêtes preflight OPTIONS
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(200);
+        exit();
+    }
+}
+
+// Fonction pour faire des requêtes à l'API Inloc
+function callInlocAPI($endpoint, $method = 'GET', $data = null) {
+    $url = INLOC_API_URL . $endpoint;
+    
+    $ch = curl_init($url);
+    
+    $headers = [
+        'Content-Type: application/json',
+        'Accept: application/json'
+    ];
+    
+    if (INLOC_API_KEY) {
+        $headers[] = 'Authorization: Bearer ' . INLOC_API_KEY;
+    }
+    
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => $headers,
+        CURLOPT_CUSTOMREQUEST => $method,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_TIMEOUT => 30
+    ]);
+    
+    if ($data && $method !== 'GET') {
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    }
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    
+    curl_close($ch);
+    
+    if ($error) {
+        return [
+            'success' => false,
+            'error' => $error,
+            'code' => 500
+        ];
+    }
+    
+    return [
+        'success' => $httpCode >= 200 && $httpCode < 300,
+        'data' => json_decode($response, true),
+        'code' => $httpCode
+    ];
+}
+
+// Fonction pour envoyer une réponse JSON
+function sendJsonResponse($data, $statusCode = 200) {
+    http_response_code($statusCode);
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    exit();
+}
+
+// Fonction pour gérer les erreurs
+function sendError($message, $statusCode = 400, $details = null) {
+    $response = [
+        'success' => false,
+        'error' => $message
+    ];
+    
+    if ($details && APP_ENV === 'development') {
+        $response['details'] = $details;
+    }
+    
+    sendJsonResponse($response, $statusCode);
+}
