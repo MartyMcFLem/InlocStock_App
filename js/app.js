@@ -6,6 +6,46 @@
 let currentPage = 'dashboard';
 let currentProduct = null;
 
+// Gestion du Dark Mode
+function initDarkMode() {
+    // Charger la préférence depuis localStorage
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    
+    if (darkMode) {
+        document.body.classList.add('dark');
+        updateThemeColor('#1F2937'); // gray-900
+    } else {
+        updateThemeColor('#4F46E5'); // indigo-600
+    }
+    
+    // Ajouter l'event listener pour le toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+    }
+}
+
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark');
+    localStorage.setItem('darkMode', isDark);
+    
+    // Mettre à jour le theme-color
+    if (isDark) {
+        updateThemeColor('#1F2937'); // gray-900
+        document.body.style.backgroundColor = '#1F2937';
+    } else {
+        updateThemeColor('#4F46E5'); // indigo-600
+        document.body.style.backgroundColor = '#4F46E5';
+    }
+}
+
+function updateThemeColor(color) {
+    let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', color);
+    }
+}
+
 // Masquer le splash screen une fois chargé
 window.addEventListener('load', () => {
     const splashScreen = document.getElementById('splash-screen');
@@ -24,6 +64,9 @@ window.addEventListener('load', () => {
 // Initialisation de l'application
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Initialisation de l\'application...');
+
+    // Initialiser le dark mode
+    initDarkMode();
 
     // Initialiser le stockage local
     try {
