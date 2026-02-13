@@ -1,0 +1,54 @@
+# Dépendances
+node_modules/
+vendor/
+
+# Fichiers de configuration sensibles
+api-config.php
+config.php
+.env
+
+# Fichiers de log
+*.log
+logs/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Fichiers IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Fichiers de cache
+cache/
+tmp/
+temp/
+
+# Sauvegarde
+*.bak
+*.backup
+*.old
+
+# Uploads
+uploads/
+files/
+
+# Base de données
+*.sql
+*.sqlite
+*.db
+
+# Clés et certificats
+*.pem
+*.key
+*.crt
+
+# Build
+dist/
+build/

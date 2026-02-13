@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hors ligne - InlocStock</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+        <div class="mb-6">
+            <div class="bg-orange-100 w-20 h-20 rounded-full mx-auto flex items-center justify-center">
+                <i class="fas fa-wifi-slash text-orange-600 text-3xl"></i>
+            </div>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Vous êtes hors ligne</h1>
+        
+        <p class="text-gray-600 mb-6">
+            Vous n'êtes pas connecté à Internet. Certaines fonctionnalités peuvent être limitées.
+        </p>
+        
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
+            <h3 class="font-semibold text-blue-800 mb-2">
+                <i class="fas fa-info-circle mr-2"></i>Mode hors ligne activé
+            </h3>
+            <p class="text-sm text-blue-700">
+                Vous pouvez continuer à utiliser l'application. Vos modifications seront synchronisées automatiquement lorsque vous serez à nouveau en ligne.
+            </p>
+        </div>
+        
+        <div class="space-y-3">
+            <button onclick="window.location.href='/'" 
+                    class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                <i class="fas fa-home mr-2"></i>Retour à l'accueil
+            </button>
+            
+            <button onclick="location.reload()" 
+                    class="w-full bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-300 transition">
+                <i class="fas fa-sync-alt mr-2"></i>Réessayer
+            </button>
+        </div>
+        
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">
+                InlocStock - Gestion de Stock
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Rediriger automatiquement quand la connexion revient
+        window.addEventListener('online', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html>

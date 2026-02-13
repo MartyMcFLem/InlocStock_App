@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="description" content="Application de gestion de stock avec scanner de codes">
+    <title>InlocStock - Gestion de Stock</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .scanner-frame {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid #4F46E5;
+            border-radius: 12px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+        }
+        
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4F46E5, transparent);
+            animation: scan 2s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-boxes text-2xl"></i>
+                    <h1 class="text-xl font-bold">InlocStock</h1>
+                </div>
+                <button id="menuBtn" class="text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav id="sideMenu" class="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
+        <div class="p-4">
+            <button id="closeMenuBtn" class="text-2xl mb-6 text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+            <ul class="space-y-4">
+                <li>
+                    <a href="#" data-page="dashboard" class="flex items-center space-x-3 text-gray-700 hover:text-indigo-600 transition">
+                        <i class="fas fa-home"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-page="scan" class="flex items-center space-x-3 text-gray-700 hover:text-indigo-600 transition">
+                        <i class="fas fa-qrcode"></i>
+                        <span>Scanner</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-page="products" class="flex items-center space-x-3 text-gray-700 hover:text-indigo-600 transition">
+                        <i class="fas fa-boxes"></i>
+                        <span>Produits</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-page="movements" class="flex items-center space-x-3 text-gray-700 hover:text-indigo-600 transition">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Mouvements</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-page="settings" class="flex items-center space-x-3 text-gray-700 hover:text-indigo-600 transition">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Menu Overlay -->
+    <div id="menuOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="container mx-auto px-4 py-6 pb-24">
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page-content">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Tableau de bord</h2>
+            
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Total Produits</p>
+                            <p class="text-2xl font-bold text-gray-800" id="totalProducts">0</p>
+                        </div>
+                        <div class="bg-indigo-100 p-3 rounded-full">
+                            <i class="fas fa-boxes text-indigo-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">En Stock</p>
+                            <p class="text-2xl font-bold text-green-600" id="inStock">0</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Stock Faible</p>
+                            <p class="text-2xl font-bold text-orange-600" id="lowStock">0</p>
+                        </div>
+                        <div class="bg-orange-100 p-3 rounded-full">
+                            <i class="fas fa-exclamation-triangle text-orange-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Mouvements (24h)</p>
+                            <p class="text-2xl font-bold text-blue-600" id="movements24h">0</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-exchange-alt text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Movements -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-semibold mb-4">Mouvements récents</h3>
+                <div id="recentMovements" class="space-y-3">
+                    <p class="text-gray-500 text-center py-4">Aucun mouvement récent</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scanner Page -->
+        <div id="scanPage" class="page-content hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Scanner</h2>
+            
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex space-x-4 mb-4">
+                    <button id="scanQRBtn" class="flex-1 bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                        <i class="fas fa-qrcode mr-2"></i>Scanner QR/Code-barres
+                    </button>
+                    <button id="scanSerialBtn" class="flex-1 bg-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-purple-700 transition">
+                        <i class="fas fa-camera mr-2"></i>Scanner N° de série
+                    </button>
+                </div>
+                
+                <div id="scannerContainer" class="hidden">
+                    <div class="scanner-frame">
+                        <div id="reader" class="rounded-lg overflow-hidden"></div>
+                        <div class="scanner-overlay">
+                            <div class="scan-line"></div>
+                        </div>
+                    </div>
+                    <button id="stopScanBtn" class="w-full mt-4 bg-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-700 transition">
+                        <i class="fas fa-stop mr-2"></i>Arrêter le scan
+                    </button>
+                </div>
+
+                <div id="ocrContainer" class="hidden">
+                    <input type="file" id="serialImageInput" accept="image/*" capture="environment" class="hidden">
+                    <div id="ocrPreview" class="mb-4"></div>
+                    <button id="cancelOCRBtn" class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-700 transition">
+                        Annuler
+                    </button>
+                </div>
+                
+                <div id="scanResult" class="mt-4"></div>
+            </div>
+
+            <!-- Manual Entry -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4">Saisie manuelle</h3>
+                <div class="space-y-3">
+                    <input type="text" id="manualCode" placeholder="Code produit ou N° de série" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 focus:border-transparent">
+                    <button id="searchManualBtn" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                        <i class="fas fa-search mr-2"></i>Rechercher
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Page -->
+        <div id="productsPage" class="page-content hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Produits</h2>
+                <button id="addProductBtn" class="bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                    <i class="fas fa-plus mr-2"></i>Ajouter
+                </button>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="bg-white rounded-lg shadow p-4 mb-6">
+                <div class="flex space-x-3">
+                    <input type="text" id="searchProducts" placeholder="Rechercher un produit..." 
+                           class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 focus:border-transparent">
+                    <button id="filterBtn" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products List -->
+            <div id="productsList" class="space-y-4">
+                <p class="text-gray-500 text-center py-8">Chargement des produits...</p>
+            </div>
+        </div>
+
+        <!-- Movements Page -->
+        <div id="movementsPage" class="page-content hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Mouvements de stock</h2>
+            
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button id="addEntryBtn" class="bg-green-600 text-white py-4 px-4 rounded-lg font-semibold hover:bg-green-700 transition">
+                    <i class="fas fa-arrow-down mr-2"></i>Entrée
+                </button>
+                <button id="addExitBtn" class="bg-red-600 text-white py-4 px-4 rounded-lg font-semibold hover:bg-red-700 transition">
+                    <i class="fas fa-arrow-up mr-2"></i>Sortie
+                </button>
+            </div>
+
+            <!-- Movements History -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold mb-4">Historique</h3>
+                <div id="movementsList" class="space-y-3">
+                    <p class="text-gray-500 text-center py-4">Aucun mouvement</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page-content hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Paramètres</h2>
+            
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4">Configuration API</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">URL de l'API</label>
+                        <input type="text" id="apiUrl" value="https://www.inloc.be/admin/api" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Clé API / Token</label>
+                        <input type="password" id="apiKey" placeholder="Votre token d'authentification" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 focus:border-transparent">
+                    </div>
+                    <button id="saveApiSettingsBtn" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                        <i class="fas fa-save mr-2"></i>Enregistrer
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4">Application</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">Notifications</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="notificationsToggle" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">Mode hors ligne</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="offlineModeToggle" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold mb-4">À propos</h3>
+                <p class="text-gray-600 mb-2">Version: 1.0.0</p>
+                <p class="text-gray-600 mb-4">InlocStock - Gestion de stock mobile</p>
+                <button id="clearCacheBtn" class="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-700 transition">
+                    <i class="fas fa-trash mr-2"></i>Vider le cache
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+        <div class="flex justify-around">
+            <button data-page="dashboard" class="nav-btn flex-1 py-4 flex flex-col items-center text-indigo-600">
+                <i class="fas fa-home text-xl mb-1"></i>
+                <span class="text-xs">Accueil</span>
+            </button>
+            <button data-page="scan" class="nav-btn flex-1 py-4 flex flex-col items-center text-gray-500 hover:text-indigo-600">
+                <i class="fas fa-qrcode text-xl mb-1"></i>
+                <span class="text-xs">Scanner</span>
+            </button>
+            <button data-page="products" class="nav-btn flex-1 py-4 flex flex-col items-center text-gray-500 hover:text-indigo-600">
+                <i class="fas fa-boxes text-xl mb-1"></i>
+                <span class="text-xs">Produits</span>
+            </button>
+            <button data-page="movements" class="nav-btn flex-1 py-4 flex flex-col items-center text-gray-500 hover:text-indigo-600">
+                <i class="fas fa-exchange-alt text-xl mb-1"></i>
+                <span class="text-xs">Mouvements</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/scanner.js"></script>
+    <script src="js/ocr.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+# Force HTTPS (recommandé pour PWA)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Cache pour le Service Worker
+<Files "service-worker.js">
+    Header set Service-Worker-Allowed "/"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</Files>
+
+# Cache pour le manifest
+<Files "manifest.json">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+</Files>
+
+# Cache pour les ressources statiques
+<FilesMatch "\.(jpg|jpeg|png|gif|ico|svg|webp)$">
+    Header set Cache-Control "public, max-age=604800, immutable"
+</FilesMatch>
+
+<FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=86400"
+</FilesMatch>
+
+# Compression Gzip
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Sécurité
+<IfModule mod_headers.c>
+    # Protection XSS
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Empêcher le sniffing MIME
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Clickjacking protection
+    Header set X-Frame-Options "SAMEORIGIN"
+    
+    # Content Security Policy (à ajuster selon vos besoins)
+    Header set Content-Security-Policy "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' data: https://cdnjs.cloudflare.com;"
+    
+    # Referrer Policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Erreurs personnalisées
+ErrorDocument 404 /index.html
+ErrorDocument 500 /offline.html
+
+# Types MIME
+AddType application/manifest+json .webmanifest .json
+
+# Désactiver le listing des répertoires
+Options -Indexes
+
+# Protection des fichiers sensibles
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
