@@ -13,7 +13,7 @@ function initDarkMode() {
     
     if (darkMode) {
         document.body.classList.add('dark');
-        updateThemeColor('#1F2937'); // gray-900
+        updateThemeColor('#111827'); // gray-900
     } else {
         updateThemeColor('#4F46E5'); // indigo-600
     }
@@ -31,8 +31,8 @@ function toggleDarkMode() {
     
     // Mettre à jour le theme-color
     if (isDark) {
-        updateThemeColor('#1F2937'); // gray-900
-        document.body.style.backgroundColor = '#1F2937';
+        updateThemeColor('#111827'); // gray-900
+        document.body.style.backgroundColor = '#111827';
     } else {
         updateThemeColor('#4F46E5'); // indigo-600
         document.body.style.backgroundColor = '#4F46E5';

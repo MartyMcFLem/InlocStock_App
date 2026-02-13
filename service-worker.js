@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inlocstock-v1.0.7';
+const CACHE_NAME = 'inlocstock-v1.0.8';
 const RUNTIME_CACHE = 'inlocstock-runtime';
 
 // Fichiers à mettre en cache lors de l'installation
