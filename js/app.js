@@ -46,21 +46,6 @@ function updateThemeColor(color) {
     }
 }
 
-// Masquer le splash screen une fois chargé
-window.addEventListener('load', () => {
-    const splashScreen = document.getElementById('splash-screen');
-    if (splashScreen) {
-        // Attendre un minimum de temps pour l'effet visuel (500ms)
-        setTimeout(() => {
-            splashScreen.classList.add('hidden');
-            // Retirer complètement après l'animation
-            setTimeout(() => {
-                splashScreen.remove();
-            }, 500);
-        }, 500);
-    }
-});
-
 // Initialisation de l'application
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Initialisation de l\'application...');
