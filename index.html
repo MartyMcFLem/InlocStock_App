@@ -200,7 +200,7 @@
             width: 100%;
             height: 100vh;
             height: 100dvh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #4F46E5;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -215,23 +215,20 @@
         }
         
         .splash-logo {
-            width: 120px;
-            height: 120px;
-            background: white;
-            border-radius: 30px;
+            width: 150px;
+            height: 150px;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             margin-bottom: 2rem;
             animation: fadeIn 0.8s ease-out;
-            overflow: hidden;
         }
         
         .splash-logo img {
-            width: 80px;
-            height: 80px;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.25));
         }
         
         .splash-title {
@@ -292,7 +289,7 @@
     <!-- Écran de chargement -->
     <div id="splash-screen">
         <div class="splash-logo">
-            <img src="./icons/icon-192x192.png" alt="InlocStock Logo">
+            <img src="./icons/android/android-launchericon-512-512.png" alt="InlocStock Logo">
         </div>
         <h1 class="splash-title">InlocStock</h1>
         <p class="splash-subtitle">Gestion de stock intelligente</p>

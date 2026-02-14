@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inlocstock-v1.0.8';
+const CACHE_NAME = 'inlocstock-v1.0.9';
 const RUNTIME_CACHE = 'inlocstock-runtime';
 
 // Fichiers à mettre en cache lors de l'installation
@@ -11,8 +11,8 @@ const PRECACHE_URLS = [
     '/js/scanner.js',
     '/js/ocr.js',
     '/js/storage.js',
-    '/icons/icon-192x192.png',
-    '/icons/icon-512x512.png'
+    '/icons/android/android-launchericon-192-192.png',
+    '/icons/android/android-launchericon-512-512.png'
 ];
 
 // Installation du Service Worker
