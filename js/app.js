@@ -52,12 +52,31 @@ function updateThemeColor(color) {
     }
 }
 
+/**
+ * Gérer le changement de visibilité (verrouillage/déverrouillage)
+ * Corrige le problème de la ligne violette après déverrouillage
+ */
+function handleVisibilityChange() {
+    if (!document.hidden) {
+        // La page est redevenue visible (déverrouillage)
+        // Resynchroniser le theme-color avec le mode actuel
+        const isDark = document.body.classList.contains('dark');
+        const correctColor = isDark ? '#111827' : '#4F46E5';
+        updateThemeColor(correctColor);
+        console.log('🔄 Theme-color resynchronisé après déverrouillage:', correctColor);
+    }
+}
+
 // Initialisation de l'application
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Initialisation de l\'application...');
 
     // Initialiser le dark mode
     initDarkMode();
+
+    // Écouter les changements de visibilité (verrouillage/déverrouillage)
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    console.log('✅ Écouteur de visibilité activé');
 
     // Initialiser le stockage local
     try {
