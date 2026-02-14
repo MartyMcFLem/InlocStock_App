@@ -12,10 +12,15 @@ function initDarkMode() {
     const darkMode = localStorage.getItem('darkMode') === 'true';
     
     if (darkMode) {
+        document.documentElement.classList.add('dark');
         document.body.classList.add('dark');
         updateThemeColor('#111827'); // gray-900
+        document.body.style.backgroundColor = '#111827';
     } else {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark');
         updateThemeColor('#4F46E5'); // indigo-600
+        document.body.style.backgroundColor = '#4F46E5';
     }
     
     // Ajouter l'event listener pour le toggle
@@ -27,9 +32,10 @@ function initDarkMode() {
 
 function toggleDarkMode() {
     const isDark = document.body.classList.toggle('dark');
+    document.documentElement.classList.toggle('dark', isDark);
     localStorage.setItem('darkMode', isDark);
     
-    // Mettre à jour le theme-color
+    // Mettre à jour le theme-color et background immédiatement
     if (isDark) {
         updateThemeColor('#111827'); // gray-900
         document.body.style.backgroundColor = '#111827';

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#4F46E5">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="InlocStock">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
@@ -44,199 +44,33 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <style>
-        /* Support des zones sûres pour les écrans modernes */
-        :root {
-            --safe-area-inset-top: env(safe-area-inset-top, 0px);
-            --safe-area-inset-right: env(safe-area-inset-right, 0px);
-            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-area-inset-left: env(safe-area-inset-left, 0px);
-            --header-height: calc(4rem + env(safe-area-inset-top, 0px));
-        }
-        
-        html, body {
-            min-height: 100dvh;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-        }
-        
-        body {
-            background-color: #4F46E5;
-            padding-left: env(safe-area-inset-left, 0px);
-            padding-right: env(safe-area-inset-right, 0px);
-        }
-        
-        body.dark {
-            background-color: #111827;
-        }
-        
-        /* Header fixé en haut avec safe-area */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding-top: env(safe-area-inset-top, 0px);
-            padding-left: env(safe-area-inset-left, 0px);
-            padding-right: env(safe-area-inset-right, 0px);
-            z-index: 50;
-        }
-        
-        header > div {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-        }
-        
-        /* Navigation du bas adaptée */
-        nav.fixed.bottom-0 {
-            padding-bottom: calc(env(safe-area-inset-bottom, 0px)) !important;
-        }
-        
-        /* Contenu principal avec padding adaptatif */
-        #mainContent {
-            margin-top: var(--header-height);
-            padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px)) !important;
-            background-color: white;
-            min-height: calc(100dvh - var(--header-height));
-        }
-        
-        body.dark #mainContent {
-            background-color: #111827;
-            color: white;
-        }
-        
-        /* Styles Dark Mode globaux */
-        body.dark .bg-white {
-            background-color: #1F2937 !important;
-        }
-        
-        body.dark .text-gray-800 {
-            color: white !important;
-        }
-        
-        body.dark .text-gray-700 {
-            color: #D1D5DB !important;
-        }
-        
-        body.dark .text-gray-500 {
-            color: #9CA3AF !important;
-        }
-        
-        body.dark .bg-gray-100 {
-            background-color: #374151 !important;
-        }
-        
-        body.dark .border-gray-200 {
-            border-color: #374151 !important;
-        }
-        
-        body.dark .shadow {
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5) !important;
-        }
-        
-        body.dark .bg-indigo-100 {
-            background-color: #312E81 !important;
-        }
-        
-        body.dark .bg-green-100 {
-            background-color: #064E3B !important;
-        }
-        
-        body.dark .bg-orange-100 {
-            background-color: #7C2D12 !important;
-        }
-        
-        body.dark .bg-blue-100 {
-            background-color: #1E3A8A !important;
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
+    <!-- Styles principaux -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Initialisation immédiate du theme-color pour éviter la barre noire -->
+    <script>
+        // IMPORTANT : Ce script doit s'exécuter AVANT le rendu pour éviter le flash
+        (function() {
+            const isDark = localStorage.getItem('darkMode') === 'true';
+            const themeColor = isDark ? '#111827' : '#4F46E5';
+            
+            // Mettre à jour le theme-color immédiatement
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
+            
+            // Ajouter la classe dark au HTML pour éviter le flash
+            if (isDark) {
+                document.documentElement.classList.add('dark');
             }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        .slide-in {
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        .scanner-frame {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .scanner-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 2px solid #3b82f6;
-            border-radius: 12px;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-        }
-        
-        .scan-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
-            animation: scan 2s linear infinite;
-        }
-        
-        @keyframes scan {
-            0% { top: 0; }
-            50% { top: 100%; }
-            100% { top: 0; }
-        }
-        
-        /* Indicateur de chargement simple */
-        #appLoader {
-            position: fixed;
-            inset: 0;
-            background: #4F46E5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.3s;
-        }
-        
-        #appLoader.loaded {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .loader-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+        })();
+    </script>
 </head>
-<body class="bg-gray-50">
+<body>
     <!-- Indicateur de chargement -->
     <div id="appLoader">
         <div class="loader-spinner"></div>
     </div>
     <!-- Header -->
-    <header class="bg-indigo-600 dark:bg-gray-900 text-white shadow-lg">
+    <header class="text-white shadow-lg">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
