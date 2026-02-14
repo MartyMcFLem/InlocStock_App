@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inlocstock-v1.3.1';
+const CACHE_NAME = 'inlocstock-v1.3.2';
 const RUNTIME_CACHE = 'inlocstock-runtime';
 
 // Fichiers à mettre en cache lors de l'installation
@@ -12,6 +12,7 @@ const PRECACHE_URLS = [
     '/js/scanner.js',
     '/js/ocr.js',
     '/js/storage.js',
+    '/icons/InlocLogoBlancTransparent.png',
     '/icons/android/android-launchericon-192-192.png',
     '/icons/android/android-launchericon-512-512.png'
 ];
