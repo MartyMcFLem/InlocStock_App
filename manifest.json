@@ -2,12 +2,11 @@
   "name": "InlocStock - Gestion de Stock",
   "short_name": "InlocStock",
   "description": "Application mobile de gestion de stock avec scanner de codes",
-  "start_url": "./",
-  "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
+  "start_url": "./index.html",
+  "display": "standalone",
   "background_color": "#4F46E5",
   "theme_color": "#4F46E5",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
   "scope": "./",
   "icons": [
     {
@@ -60,7 +59,7 @@
       "name": "Scanner",
       "short_name": "Scanner",
       "description": "Scanner un code QR ou code-barres",
-      "url": "/index.html?page=scan",
+      "url": "./index.html?page=scan",
       "icons": [
         {
           "src": "icons/android/android-launchericon-192-192.png",
@@ -72,7 +71,7 @@
       "name": "Produits",
       "short_name": "Produits",
       "description": "Voir la liste des produits",
-      "url": "/index.html?page=products",
+      "url": "./index.html?page=products",
       "icons": [
         {
           "src": "icons/android/android-launchericon-192-192.png",

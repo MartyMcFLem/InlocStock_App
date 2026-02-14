@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Enregistrer le service worker
     if ('serviceWorker' in navigator) {
         try {
-            const registration = await navigator.serviceWorker.register('/service-worker.js');
+            const registration = await navigator.serviceWorker.register('./service-worker.js');
             console.log('Service Worker enregistré:', registration.scope);
 
             // Écouter les messages du service worker
@@ -84,6 +84,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Vérifier les paramètres de configuration
     checkConfiguration();
+    
+    // Vérifier si l'app est en mode standalone
+    checkStandaloneMode();
 
     // Masquer le loader
     const appLoader = document.getElementById('appLoader');
@@ -94,6 +97,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     console.log('Application prête');
 });
+
+/**
+ * Vérifier si l'app est en mode standalone (installée)
+ */
+function checkStandaloneMode() {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+        || window.navigator.standalone 
+        || document.referrer.includes('android-app://');
+    
+    if (!isStandalone) {
+        console.log('💡 L\'application n\'est pas installée. Pour profiter du mode plein écran, installez-la sur votre écran d\'accueil.');
+        // Optionnel : afficher un message à l'utilisateur
+        setTimeout(() => {
+            if (!localStorage.getItem('installPromptShown')) {
+                showToast('💡 Astuce : Installez l\'app sur votre écran d\'accueil pour une meilleure expérience', 'info', 5000);
+                localStorage.setItem('installPromptShown', 'true');
+            }
+        }, 2000);
+    } else {
+        console.log('✅ Application en mode standalone (installée)');
+    }
+}
 
 /**
  * Initialiser l'interface utilisateur
