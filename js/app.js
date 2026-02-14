@@ -85,6 +85,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Vérifier les paramètres de configuration
     checkConfiguration();
 
+    // Masquer le loader
+    const appLoader = document.getElementById('appLoader');
+    if (appLoader) {
+        appLoader.classList.add('loaded');
+        setTimeout(() => appLoader.remove(), 300);
+    }
+
     console.log('Application prête');
 });
 
@@ -98,9 +105,9 @@ function initializeUI() {
     const sideMenu = document.getElementById('sideMenu');
     const menuOverlay = document.getElementById('menuOverlay');
 
-    menuBtn.addEventListener('click', openMenu);
-    closeMenuBtn.addEventListener('click', closeMenu);
-    menuOverlay.addEventListener('click', closeMenu);
+    if (menuBtn) menuBtn.addEventListener('click', openMenu);
+    if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMenu);
+    if (menuOverlay) menuOverlay.addEventListener('click', closeMenu);
 
     // Navigation
     const navButtons = document.querySelectorAll('.nav-btn, [data-page]');
@@ -121,31 +128,31 @@ function initializeUI() {
     const stopScanBtn = document.getElementById('stopScanBtn');
     const searchManualBtn = document.getElementById('searchManualBtn');
 
-    scanQRBtn.addEventListener('click', startQRScanner);
-    scanSerialBtn.addEventListener('click', startSerialScanner);
-    stopScanBtn.addEventListener('click', stopScanner);
-    searchManualBtn.addEventListener('click', searchManual);
+    if (scanQRBtn) scanQRBtn.addEventListener('click', startQRScanner);
+    if (scanSerialBtn) scanSerialBtn.addEventListener('click', startSerialScanner);
+    if (stopScanBtn) stopScanBtn.addEventListener('click', stopScanner);
+    if (searchManualBtn) searchManualBtn.addEventListener('click', searchManual);
 
     // Produits
     const addProductBtn = document.getElementById('addProductBtn');
     const searchProducts = document.getElementById('searchProducts');
 
-    addProductBtn.addEventListener('click', showAddProductDialog);
-    searchProducts.addEventListener('input', debounce(searchProductsHandler, 300));
+    if (addProductBtn) addProductBtn.addEventListener('click', showAddProductDialog);
+    if (searchProducts) searchProducts.addEventListener('input', debounce(searchProductsHandler, 300));
 
     // Mouvements
     const addEntryBtn = document.getElementById('addEntryBtn');
     const addExitBtn = document.getElementById('addExitBtn');
 
-    addEntryBtn.addEventListener('click', () => showMovementDialog('entry'));
-    addExitBtn.addEventListener('click', () => showMovementDialog('exit'));
+    if (addEntryBtn) addEntryBtn.addEventListener('click', () => showMovementDialog('entry'));
+    if (addExitBtn) addExitBtn.addEventListener('click', () => showMovementDialog('exit'));
 
     // Paramètres
     const saveApiSettingsBtn = document.getElementById('saveApiSettingsBtn');
     const clearCacheBtn = document.getElementById('clearCacheBtn');
 
-    saveApiSettingsBtn.addEventListener('click', saveApiSettings);
-    clearCacheBtn.addEventListener('click', clearCache);
+    if (saveApiSettingsBtn) saveApiSettingsBtn.addEventListener('click', saveApiSettings);
+    if (clearCacheBtn) clearCacheBtn.addEventListener('click', clearCache);
 
     // Vérifier le statut de connexion
     window.addEventListener('online', () => {
