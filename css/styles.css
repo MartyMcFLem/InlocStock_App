@@ -26,15 +26,14 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
-    background-color: #1F2937;
+    background-color: #4F46E5;
     padding-left: env(safe-area-inset-left, 0px);
     padding-right: env(safe-area-inset-right, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 body.dark,
 html.dark body {
-    background-color: #1F2937;
+    background-color: #111827;
 }
 
 /* Header fixé en haut avec safe-area - doit commencer à 0 sans espace */
@@ -48,13 +47,13 @@ header {
     padding-left: env(safe-area-inset-left, 0px);
     padding-right: env(safe-area-inset-right, 0px);
     z-index: 50;
-    background-color: #1F2937;
+    background-color: #4F46E5;
     margin: 0;
 }
 
 html.dark header,
 body.dark header {
-    background-color: #1F2937;
+    background-color: #111827;
 }
 
 header > div {
@@ -62,9 +61,9 @@ header > div {
     padding-bottom: 1rem;
 }
 
-/* Navigation du bas adaptée avec safe-area pour la barre de geste */
+/* Navigation du bas adaptée */
 nav.fixed.bottom-0 {
-    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px)) !important;
 }
 
 /* Contenu principal avec padding adaptatif */
@@ -76,7 +75,7 @@ nav.fixed.bottom-0 {
 }
 
 body.dark #mainContent {
-    background-color: #1F2937;
+    background-color: #111827;
     color: white;
 }
 
@@ -182,7 +181,7 @@ body.dark .bg-blue-100 {
 #appLoader {
     position: fixed;
     inset: 0;
-    background: #1F2937;
+    background: #4F46E5;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -194,7 +193,7 @@ body.dark .bg-blue-100 {
 
 html.dark #appLoader,
 body.dark #appLoader {
-    background: #1F2937;
+    background: #111827;
 }
 
 #appLoader.loaded {

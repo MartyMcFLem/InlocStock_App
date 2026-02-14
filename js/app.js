@@ -14,13 +14,13 @@ function initDarkMode() {
     if (darkMode) {
         document.documentElement.classList.add('dark');
         document.body.classList.add('dark');
-        updateThemeColor('#1F2937'); // gray-800
-        document.body.style.backgroundColor = '#1F2937';
+        updateThemeColor('#111827'); // gray-900
+        document.body.style.backgroundColor = '#111827';
     } else {
         document.documentElement.classList.remove('dark');
         document.body.classList.remove('dark');
-        updateThemeColor('#1F2937'); // gray-800
-        document.body.style.backgroundColor = '#1F2937';
+        updateThemeColor('#4F46E5'); // indigo-600
+        document.body.style.backgroundColor = '#4F46E5';
     }
     
     // Ajouter l'event listener pour le toggle
@@ -37,11 +37,11 @@ function toggleDarkMode() {
     
     // Mettre à jour le theme-color et background immédiatement
     if (isDark) {
-        updateThemeColor('#1F2937'); // gray-800
-        document.body.style.backgroundColor = '#1F2937';
+        updateThemeColor('#111827'); // gray-900
+        document.body.style.backgroundColor = '#111827';
     } else {
-        updateThemeColor('#1F2937'); // gray-800
-        document.body.style.backgroundColor = '#1F2937';
+        updateThemeColor('#4F46E5'); // indigo-600
+        document.body.style.backgroundColor = '#4F46E5';
     }
 }
 

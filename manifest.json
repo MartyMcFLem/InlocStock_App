@@ -3,9 +3,9 @@
   "short_name": "InlocStock",
   "description": "Application mobile de gestion de stock avec scanner de codes",
   "start_url": "./index.html",
-  "display": "fullscreen",
-  "background_color": "#1F2937",
-  "theme_color": "#1F2937",
+  "display": "standalone",
+  "background_color": "#4F46E5",
+  "theme_color": "#4F46E5",
   "orientation": "portrait",
   "scope": "./",
   "icons": [
